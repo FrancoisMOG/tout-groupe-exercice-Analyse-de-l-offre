@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercice : Analyse d'Offres d'Emploi</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #3498db;
+            --bg-color: #f4f7f6;
+            --paper-color: #ffffff;
+            --text-color: #333333;
+            --border-color: #dcdcdc;
+            --success-color: #27ae60;
+        }
+
+        * {
+            box-sizing: border-box;
+            outline: none;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .app-container {
+            background-color: var(--paper-color);
+            width: 100%;
+            max-width: 210mm;
+            min-height: 297mm;
+            padding: 15mm;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border-radius: 4px;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        /* --- EN-TÊTE --- */
+        header {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 20px;
+        }
+
+        .header-title {
+            text-align: center;
+        }
+
+        .header-title h1 {
+            margin: 0;
+            font-size: 1.8rem;
+            color: var(--primary-color);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+
+        .header-title .subtitle {
+            font-size: 1rem;
+            color: #666;
+            margin-top: 8px;
+            font-style: italic;
+        }
+
+        .identity-bar {
+            background-color: #eef6fb;
+            border: 1px solid #d0e7f5;
+            border-radius: 6px;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .date-box {
+            font-size: 0.9rem;
+            color: #555;
+            font-weight: 600;
+        }
+
+        .name-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-grow: 1;
+            justify-content: flex-end;
+        }
+
+        .name-label {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            text-transform: uppercase;
+        }
+
+        #student-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #000;
+            border: 2px solid var(--primary-color);
+            border-radius: 4px;
+            background-color: #fff;
+            padding: 8px 15px;
+            text-align: left;
+            width: 60%;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            transition: all 0.2s;
+        }
+
+        #student-name:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 4px rgba(52, 152, 219, 0.2);
+            transform: scale(1.01);
+        }
+        
+        #student-name::placeholder {
+            color: #bbb;
+            font-weight: 400;
+            font-size: 1.1rem;
+        }
+
+        /* --- Sections --- */
+        section h2 {
+            font-size: 1.1rem;
+            color: var(--primary-color);
+            border-left: 4px solid var(--accent-color);
+            padding-left: 10px;
+            margin-bottom: 15px;
+            background: #f9f9f9;
+            padding-top: 5px;
+            padding-bottom: 5px;
+        }
+
+        .links-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .input-group label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #555;
+        }
+
+        input[type="url"], textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 0.9rem;
+            transition: border-color 0.2s;
+            background-color: #fafafa;
+        }
+
+        input[type="url"]:focus, textarea:focus {
+            border-color: var(--accent-color);
+            background-color: #fff;
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.1);
+        }
+
+        .comparison-table-wrapper {
+            overflow-x: auto;
+        }
+
+        table.comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        table.comparison-table th, table.comparison-table td {
+            border: 1px solid var(--border-color);
+            padding: 8px;
+            vertical-align: top;
+        }
+
+        table.comparison-table th {
+            background-color: var(--primary-color);
+            color: white;
+            text-align: center;
+            font-weight: 600;
+            padding: 10px 5px;
+        }
+
+        table.comparison-table td:first-child {
+            background-color: #eee;
+            font-weight: bold;
+            width: 20%;
+            text-align: left;
+            padding-left: 12px;
+            color: #444;
+        }
+
+        td textarea {
+            width: 100%;
+            height: 80px;
+            border: none;
+            resize: vertical;
+            background: transparent;
+            padding: 0;
+            font-size: inherit;
+            min-height: 60px;
+        }
+        
+        td textarea:focus {
+            box-shadow: none;
+        }
+
+        .synthesis-area {
+            width: 100%;
+        }
+
+        .synthesis-area textarea {
+            height: 120px;
+            resize: vertical;
+        }
+
+        .actions-bar {
+            margin-top: auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+
+        .status-msg {
+            font-size: 0.8rem;
+            color: var(--success-color);
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        button {
+            cursor: pointer;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary { background-color: var(--accent-color); color: white; }
+        .btn-primary:hover { background-color: #2980b9; }
+        .btn-secondary { background-color: #ecf0f1; color: #2c3e50; }
+        .btn-secondary:hover { background-color: #bdc3c7; }
+        .btn-danger { background-color: #e74c3c; color: white; }
+        .btn-danger:hover { background-color: #c0392b; }
+
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 4px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transform: translateY(100px);
+            transition: transform 0.3s ease-out;
+            z-index: 1000;
+        }
+        .toast.show { transform: translateY(0); }
+
+        /* --- STYLE IMPRESSION --- */
+        @media print {
+            @page { size: A4; margin: 10mm; }
+            body {
+                background-color: white;
+                padding: 0; margin: 0;
+                width: 100%;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            .app-container {
+                box-shadow: none;
+                max-width: none;
+                width: 100%;
+                padding: 0; margin: 0;
+                min-height: auto;
+            }
+            .actions-bar, .toast { display: none !important; }
+
+            .identity-bar {
+                background-color: #f0f0f0 !important;
+                border: 1px solid #ccc !important;
+                -webkit-print-color-adjust: exact;
+            }
+            
+            #student-name {
+                border: none;
+                border-bottom: 2px solid #000 !important;
+                width: 60%;
+                background: transparent !important;
+                color: black !important;
+                font-size: 1.5rem;
+                font-weight: bold;
+            }
+
+            input[type="url"], textarea {
+                border: 1px solid #ddd;
+                resize: none;
+                overflow: hidden;
+                height: auto;
+                background: transparent !important;
+                color: black !important;
+            }
+            input, textarea { white-space: pre-wrap; }
+            table.comparison-table { page-break-inside: avoid; }
+            section { page-break-inside: avoid; margin-bottom: 15px; }
+            header h1 { font-size: 1.2rem; text-align: left; }
+            .header-title { text-align: left; }
+            section h2 { background-color: #eee !important; color: black !important; }
+            table.comparison-table th { background-color: #ccc !important; color: black !important; }
+            td textarea { height: auto; min-height: 30px; }
+        }
+
+        @media (max-width: 768px) {
+            .identity-bar { flex-direction: column; align-items: flex-start; }
+            .name-box { width: 100%; justify-content: space-between; }
+            #student-name { width: 70%; text-align: left; }
+            .links-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <!-- En-tête -->
+        <header>
+            <div class="header-title">
+                <h1>Analyse d’Offres d’Emploi</h1>
+                <div class="subtitle">Objectif : Identifier compétences, exigences et tendances du marché</div>
+            </div>
+            
+            <div class="identity-bar">
+                <div class="date-box">
+                    Date : <span id="current-date"></span>
+                </div>
+                <div class="name-box">
+                    <!-- CHANGEMENT ICI : "Élève" remplacé par "Nom Prénom" -->
+                    <label for="student-name" class="name-label">Nom Prénom :</label>
+                    <input type="text" id="student-name" class="save-trigger" placeholder="VOTRE NOM ET PRÉNOM ICI" autocomplete="off">
+                </div>
+            </div>
+        </header>
+
+        <!-- Section 1 : Sources -->
+        <section>
+            <h2>1. Sélection des Offres (Sources)</h2>
+            <p style="font-size: 0.9rem; color: #666; margin-bottom: 10px;">Copiez les liens des 3 offres analysées (même métier).</p>
+            <div class="links-grid">
+                <div class="input-group">
+                    <label for="url-1">Offre n°1</label>
+                    <input type="url" id="url-1" placeholder="https://..." class="save-trigger">
+                </div>
+                <div class="input-group">
+                    <label for="url-2">Offre n°2</label>
+                    <input type="url" id="url-2" placeholder="https://..." class="save-trigger">
+                </div>
+                <div class="input-group">
+                    <label for="url-3">Offre n°3</label>
+                    <input type="url" id="url-3" placeholder="https://..." class="save-trigger">
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2 : Analyse détaillée -->
+        <section>
+            <h2>2. Repérage des Éléments Clés</h2>
+            <div class="comparison-table-wrapper">
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 18%;">Critères</th>
+                            <th style="width: 27%;">Offre 1</th>
+                            <th style="width: 27%;">Offre 2</th>
+                            <th style="width: 28%;">Offre 3</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Compétences Techniques<br><small>(Hard Skills)</small></td>
+                            <td><textarea id="tech-1" class="save-trigger" placeholder="Ex: Java, SQL, Agile..."></textarea></td>
+                            <td><textarea id="tech-2" class="save-trigger" placeholder="Ex: Java, SQL, Agile..."></textarea></td>
+                            <td><textarea id="tech-3" class="save-trigger" placeholder="Ex: Java, SQL, Agile..."></textarea></td>
+                        </tr>
+                        <tr>
+                            <td>Savoir-être<br><small>(Soft Skills)</small></td>
+                            <td><textarea id="soft-1" class="save-trigger" placeholder="Ex: Esprit d'équipe, Curiosité..."></textarea></td>
+                            <td><textarea id="soft-2" class="save-trigger" placeholder="Ex: Esprit d'équipe, Curiosité..."></textarea></td>
+                            <td><textarea id="soft-3" class="save-trigger" placeholder="Ex: Esprit d'équipe, Curiosité..."></textarea></td>
+                        </tr>
+                        <tr>
+                            <td>Conditions de travail</td>
+                            <td><textarea id="cond-1" class="save-trigger" placeholder="Ex: Télétravail, Horaires, Salaire..."></textarea></td>
+                            <td><textarea id="cond-2" class="save-trigger" placeholder="Ex: Télétravail, Horaires, Salaires..."></textarea></td>
+                            <td><textarea id="cond-3" class="save-trigger" placeholder="Ex: Télétravail, Horaires, Salaires..."></textarea></td>
+                        </tr>
+                        <tr>
+                            <td>Certifications / Diplômes</td>
+                            <td><textarea id="cert-1" class="save-trigger" placeholder="Ex: Master, AWS Certified..."></textarea></td>
+                            <td><textarea id="cert-2" class="save-trigger" placeholder="Ex: Master, AWS Certified..."></textarea></td>
+                            <td><textarea id="cert-3" class="save-trigger" placeholder="Ex: Master, AWS Certified..."></textarea></td>
+                        </tr>
+                        <tr>
+                            <td>Mots-clés récurrents</td>
+                            <td><textarea id="keys-1" class="save-trigger" placeholder="Mots clés importants..."></textarea></td>
+                            <td><textarea id="keys-2" class="save-trigger" placeholder="Mots clés importants..."></textarea></td>
+                            <td><textarea id="keys-3" class="save-trigger" placeholder="Mots clés importants..."></textarea></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Section 3 : Synthèse -->
+        <section>
+            <h2>3. Comparaison et Tendances</h2>
+            <div class="synthesis-area input-group">
+                <label for="synthesis">Synthèse globale du marché :</label>
+                <textarea id="synthesis" class="save-trigger" placeholder="Que pouvez-vous conclure de ces trois offres ? Quelles sont les compétences indispensables ? Quelles évolutions notez-vous ?"></textarea>
+            </div>
+        </section>
+
+        <!-- Actions -->
+        <div class="actions-bar no-print">
+            <div class="status-msg" id="save-status">Sauvegardé</div>
+            <div class="btn-group">
+                <button class="btn-danger" onclick="resetForm()" title="Effacer tout le contenu">
+                    🗑️ Réinitialiser
+                </button>
+                <button class="btn-primary" onclick="window.print()" title="Ouvrir le menu d'impression pour sauvegarder en PDF">
+                    🖨️ Imprimer / PDF
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast" class="toast">État enregistré avec succès</div>
+
+    <script>
+        const STORAGE_KEY = 'job_analysis_exercise_data';
+        document.getElementById('current-date').textContent = new Date().toLocaleDateString('fr-FR');
+        const inputs = document.querySelectorAll('.save-trigger');
+
+        window.addEventListener('DOMContentLoaded', () => {
+            loadData();
+        });
+
+        inputs.forEach(input => {
+            input.addEventListener('input', () => {
+                saveData();
+            });
+        });
+
+        function saveData() {
+            const data = {};
+            inputs.forEach(input => {
+                data[input.id] = input.value;
+            });
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+                showFeedback(true);
+            } catch (e) {
+                showFeedback(false);
+            }
+        }
+
+        function loadData() {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            if (saved) {
+                try {
+                    const data = JSON.parse(saved);
+                    inputs.forEach(input => {
+                        if (data[input.id]) {
+                            input.value = data[input.id];
+                        }
+                    });
+                } catch (e) {
+                    console.error("Erreur de chargement", e);
+                }
+            }
+        }
+
+        function resetForm() {
+            if(confirm("Êtes-vous sûr de vouloir tout effacer ?")) {
+                inputs.forEach(input => input.value = '');
+                localStorage.removeItem(STORAGE_KEY);
+                showFeedback(true, "Formulaire réinitialisé");
+            }
+        }
+
+        let timeoutId;
+        function showFeedback(success, message = "Sauvegardé") {
+            const statusEl = document.getElementById('save-status');
+            statusEl.textContent = message;
+            statusEl.style.opacity = '1';
+            statusEl.style.color = success ? 'var(--success-color)' : 'red';
+            clearTimeout(timeoutId);
+            timeoutId = setTimeout(() => {
+                statusEl.style.opacity = '0';
+            }, 2000);
+        }
+
+        window.addEventListener('beforeprint', () => {
+            document.querySelectorAll('textarea').forEach(el => {
+                el.style.height = 'auto'; 
+                el.style.height = (el.scrollHeight + 10) + 'px';
+            });
+        });
+    </script>
+</body>
+</html>
